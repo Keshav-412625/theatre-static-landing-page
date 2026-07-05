@@ -3,7 +3,7 @@
 Yeh project Theater Floor Staff ke liye ek internal management dashboard hai. Iska uddeshya shows aur ticket logs ko handle karna aur management reporting ke liye structured data provide karna hai.
 
 ## 📋 Project Overview
-Yeh ek **Static Web Application** hai jise pure HTML5, CSS3, aur Vanilla JavaScript mein banaya gaya hai. Ismein kisi bhi external framework (jaise React, Bootstrap) ki dependency nahi hai, jisse yeh kisi bhi environment mein tezi se load hota hai.
+Yeh ek **Static Web Application** hai jise pure HTML5, CSS3, aur Vanilla JavaScript mein banaya gaya hai. Ismein kisi bhi external framework ki dependency nahi hai, jisse yeh kisi bhi environment mein tezi se load hota hai.
 
 ## 🚀 Key Features
 - **Form Management:** Naye show entries ko add karne ke liye responsive form.
