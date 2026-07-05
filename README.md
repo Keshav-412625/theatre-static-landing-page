@@ -14,7 +14,7 @@ Yeh ek **Static Web Application** hai jise pure HTML5, CSS3, aur Vanilla JavaScr
 
 ## 🛠 Tech Stack
 - **HTML5:** Semantic structure ke liye.
-- **CSS3:** Flexbox, Grid, aur CSS Variables (strict spacing ke liye).
+- **CSS3:** Flexbox, Grid, aur CSS Variables .
 - **Vanilla JavaScript:** DOM manipulation aur data handling ke liye.
 
 ## 📦 How to Run
