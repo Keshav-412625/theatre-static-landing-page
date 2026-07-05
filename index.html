@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theater Play - Floor Staff Dashboard (ENG-11594)</title>
+    <style>
+        :root {
+            --color-bg: #ffffff;
+            --color-surface: #f4f4f6;
+            --color-border: #e2e2e5;
+            --color-text-main: #111111;
+            --color-text-muted: #666666;
+            --color-error: #cc0000;
+            --color-error-bg: #fff0f0;
+            --color-success-bg: #eafaea;
+
+            --spacing-small: 8px;
+            --spacing-medium: 16px;
+            --spacing-large: 32px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--color-surface);
+            color: var(--color-text-main);
+            padding: var(--spacing-large);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--color-bg);
+            padding: var(--spacing-large);
+            border: 1px solid var(--color-border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        }
+
+        header {
+            border-bottom: 2px solid var(--color-text-main);
+            padding-bottom: var(--spacing-medium);
+            margin-bottom: var(--spacing-large);
+        }
+
+        header h1 {
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .meta-badge {
+            display: inline-block;
+            background: var(--color-text-main);
+            color: var(--color-bg);
+            padding: 4px var(--spacing-small);
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: var(--spacing-small);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-large);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            body {
+                padding: var(--spacing-medium);
+            }
+        }
+
+        section {
+            border: 1px solid var(--color-border);
+            padding: var(--spacing-medium);
+            background: var(--color-bg);
+        }
+
+        section h2 {
+            font-size: 18px;
+            margin-bottom: var(--spacing-medium);
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: var(--spacing-small);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-medium);
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: var(--spacing-small);
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: var(--spacing-small) var(--spacing-medium);
+            border: 1px solid var(--color-border);
+            background: var(--color-bg);
+            color: var(--color-text-main);
+            font-size: 14px;
+        }
+
+        .form-control:focus {
+            outline: 2px solid var(--color-text-main);
+        }
+
+        .form-control.is-invalid {
+            border-color: var(--color-error);
+            background-color: var(--color-error-bg);
+        }
+
+        .error-message {
+            color: var(--color-error);
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--color-text-main);
+            color: var(--color-bg);
+            border: 1px solid var(--color-text-main);
+            padding: var(--spacing-small) var(--spacing-medium);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
+        }
+
+        .btn:hover,
+        .btn:focus {
+            background: #333333;
+            outline: 2px solid var(--color-text-main);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--color-text-main);
+            margin-top: var(--spacing-small);
+        }
+
+        .loading-indicator {
+            display: none;
+            text-align: center;
+            padding: var(--spacing-medium);
+            font-weight: bold;
+            color: var(--color-text-muted);
+            border: 1px dashed var(--color-text-muted);
+            margin-bottom: var(--spacing-medium);
+        }
+
+        .data-table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th,
+        td {
+            padding: var(--spacing-small) var(--spacing-medium);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        th {
+            background: var(--color-surface);
+            font-weight: 600;
+        }
+
+        .empty-state {
+            display: none;
+            text-align: center;
+            padding: var(--spacing-large);
+            color: var(--color-text-muted);
+            font-style: italic;
+        }
+
+        .status-banner {
+            padding: var(--spacing-small) var(--spacing-medium);
+            margin-bottom: var(--spacing-medium);
+            font-size: 13px;
+            display: none;
+        }
+
+        .status-success {
+            background: var(--color-success-bg);
+            border: 1px solid var(--color-text-main);
+        }
+    </style>
+</head>
+<body>
+    <main class="container" role="main">
+        <header>
+            <h1>Theater Play - Floor Staff Desk</h1>
+            <div class="meta-badge" aria-label="Ticket Reference">ID: ENG-11594 | P1 High</div>
+        </header>
+
+        <div id="statusBanner" class="status-banner status-success" role="alert"></div>
+
+        <div id="loadingIndicator" class="loading-indicator" role="status" aria-live="polite">
+            Processing request... Please wait.
+        </div>
+
+        <div class="dashboard-grid">
+            <section aria-labelledby="form-heading">
+                <h2 id="form-heading">New Ticket / Show Entry</h2>
+                <form id="showForm" novalidate>
+                    <div class="form-group">
+                        <label for="showTitle">Show Title / Play Name</label>
+                        <input type="text" id="showTitle" class="form-control" placeholder="e.g., Hamlet" required aria-required="true">
+                        <div class="error-message" id="titleError">Show Title is required.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="floorSection">Floor Staff Section / Area</label>
+                        <input type="text" id="floorSection" class="form-control" placeholder="e.g., Balcony A" required aria-required="true">
+                        <div class="error-message" id="sectionError">Floor Section is required.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ticketCount">Tickets Confirmed</label>
+                        <input type="number" id="ticketCount" class="form-control" placeholder="e.g., 4" required aria-required="true" min="1" step="1">
+                        <div class="error-message" id="countError">Please enter a valid ticket number (minimum 1).</div>
+                    </div>
+
+                    <button type="submit" class="btn" aria-label="Submit entry to log">Save Entry</button>
+                    <button type="button" id="triggerEmptyBtn" class="btn btn-secondary" aria-label="Toggle clear data for testing">Simulate Clear/Empty State</button>
+                </form>
+            </section>
+
+            <section aria-labelledby="data-heading">
+                <h2 id="data-heading">Live Structured Logs</h2>
+
+                <div class="data-table-container">
+                    <table id="dataTable" summary="List of current theater shows logs added by floor staff">
+                        <thead>
+                            <tr>
+                                <th scope="col">Play Title</th>
+                                <th scope="col">Section</th>
+                                <th scope="col">Count</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr>
+                                <td>Macbeth Night Show</td>
+                                <td>Premium Lounge</td>
+                                <td>45</td>
+                            </tr>
+                            <tr>
+                                <td>The Tempest Matinee</td>
+                                <td>Front Row Block B</td>
+                                <td>12</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="emptyState" class="empty-state" aria-live="polite">
+                    No data found. Currently, no active floor logs are loaded.
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        const showForm = document.getElementById('showForm');
+        const tableBody = document.getElementById('tableBody');
+        const dataTable = document.getElementById('dataTable');
+        const emptyState = document.getElementById('emptyState');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const statusBanner = document.getElementById('statusBanner');
+        const triggerEmptyBtn = document.getElementById('triggerEmptyBtn');
+
+        const fields = {
+            showTitle: {
+                input: document.getElementById('showTitle'),
+                error: document.getElementById('titleError')
+            },
+            floorSection: {
+                input: document.getElementById('floorSection'),
+                error: document.getElementById('sectionError')
+            },
+            ticketCount: {
+                input: document.getElementById('ticketCount'),
+                error: document.getElementById('countError')
+            }
+        };
+
+        function sanitizeText(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function setFieldError(field, message) {
+            field.input.classList.add('is-invalid');
+            field.error.textContent = message;
+            field.error.style.display = 'block';
+        }
+
+        function clearFieldErrors() {
+            Object.values(fields).forEach(field => {
+                field.input.classList.remove('is-invalid');
+                field.error.style.display = 'none';
+            });
+        }
+
+        function setStatus(message) {
+            statusBanner.textContent = message;
+            statusBanner.style.display = 'block';
+        }
+
+        function logTelemetry(actionDescription) {
+            console.log(`[Analytics] Action: ${actionDescription}`);
+        }
+
+        showForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            clearFieldErrors();
+
+            const titleVal = fields.showTitle.input.value.trim();
+            const sectionVal = fields.floorSection.input.value.trim();
+            const countVal = fields.ticketCount.input.value.trim();
+
+            let isValid = true;
+
+            if (!titleVal) {
+                setFieldError(fields.showTitle, 'Show Title is required.');
+                isValid = false;
+            }
+
+            if (!sectionVal) {
+                setFieldError(fields.floorSection, 'Floor Section is required.');
+                isValid = false;
+            }
+
+            const countNum = Number(countVal);
+            if (!Number.isInteger(countNum) || countNum < 1) {
+                setFieldError(fields.ticketCount, 'Please enter a valid ticket number (minimum 1).');
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            loadingIndicator.style.display = 'block';
+
+            setTimeout(() => {
+                loadingIndicator.style.display = 'none';
+
+                const row = document.createElement('tr');
+                row.appendChild(Object.assign(document.createElement('td'), { textContent: titleVal }));
+                row.appendChild(Object.assign(document.createElement('td'), { textContent: sectionVal }));
+                row.appendChild(Object.assign(document.createElement('td'), { textContent: String(countNum) }));
+                tableBody.appendChild(row);
+
+                dataTable.style.display = 'table';
+                emptyState.style.display = 'none';
+
+                setStatus('Data synced safely to local floor log repository.');
+                logTelemetry(`Successfully created entry for ${titleVal}`);
+
+                showForm.reset();
+            }, 800);
+        });
+
+        triggerEmptyBtn.addEventListener('click', function () {
+            tableBody.innerHTML = '';
+            dataTable.style.display = 'none';
+            emptyState.style.display = 'block';
+
+            setStatus('Data cleared. Empty State active.');
+            logTelemetry('Simulated Empty State Triggered');
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            logTelemetry('Initial Page Load and Layout Ready');
+        });
+    </script>
+</body>
+</html>
